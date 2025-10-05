@@ -144,6 +144,26 @@ func TestIntermediateHashOperations(t *testing.T) {
 		t.Error("HSETNX should succeed for new field")
 	}
 
+	// Test HMSET - Set multiple fields (deprecated but still works)
+	hmsetFields := map[string]interface{}{
+		"department": "Engineering",
+		"role":       "Developer",
+		"salary":     "75000",
+	}
+	err = rdb.HMSet(ctx, "test_hash", hmsetFields).Err()
+	if err != nil {
+		t.Fatalf("Error with HMSET: %v", err)
+	}
+
+	// Verify HMSET worked
+	dept, err := rdb.HGet(ctx, "test_hash", "department").Result()
+	if err != nil {
+		t.Fatalf("Error getting department after HMSET: %v", err)
+	}
+	if dept != "Engineering" {
+		t.Errorf("Expected 'Engineering', got '%s'", dept)
+	}
+
 	// Cleanup
 	rdb.Del(ctx, "test_hash")
 }

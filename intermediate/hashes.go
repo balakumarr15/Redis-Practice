@@ -9,7 +9,7 @@ import (
 )
 
 // Redis Hash operations - HSET, HGET, HMSET, etc.
-func HashOperations() {
+func main() {
 	// Connect to Redis
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
@@ -197,16 +197,30 @@ func HashOperations() {
 	fmt.Println("\n=== HMSET Command (deprecated) ===")
 
 	// Note: HMSET is deprecated, use HSET instead
+	// But let's demonstrate the actual HMSET command for educational purposes
 	fields2 := map[string]interface{}{
 		"department": "Engineering",
 		"role":       "Developer",
 		"salary":     "75000",
 	}
-	_, err = rdb.HSet(ctx, "user:1001", fields2).Result()
+
+	// Using HMSET (deprecated but still functional)
+	err = rdb.HMSet(ctx, "user:1001", fields2).Err()
 	if err != nil {
-		log.Fatalf("Error setting additional fields: %v", err)
+		log.Fatalf("Error setting additional fields with HMSET: %v", err)
 	}
-	fmt.Println("Set additional user fields")
+	fmt.Println("Set additional user fields using HMSET")
+
+	// Modern approach using HSET (recommended)
+	fields3 := map[string]interface{}{
+		"manager":   "John Doe",
+		"team_size": "5",
+	}
+	_, err = rdb.HSet(ctx, "user:1001", fields3).Result()
+	if err != nil {
+		log.Fatalf("Error setting additional fields with HSET: %v", err)
+	}
+	fmt.Println("Set additional user fields using HSET (modern approach)")
 
 	// 14. Final hash state
 	fmt.Println("\n=== Final Hash State ===")
