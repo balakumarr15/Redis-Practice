@@ -255,7 +255,7 @@ func main() {
 	for _, key := range rateLimitKeys {
 		// Add some requests to rate limiter
 		for i := 0; i < 3; i++ {
-			_, err := rdb.ZAdd(ctx, fmt.Sprintf("rate_limit:%s", key), redis.Z{
+			err := rdb.ZAdd(ctx, fmt.Sprintf("rate_limit:%s", key), redis.Z{
 				Score:  float64(time.Now().Unix()),
 				Member: fmt.Sprintf("%d", time.Now().UnixNano()),
 			}).Err()
@@ -309,7 +309,7 @@ func main() {
 	fmt.Printf("Total keys in database: %d\n", totalKeys)
 
 	// Get memory usage
-	info, err := rdb.Info(ctx, "memory").Result()
+	_, err = rdb.Info(ctx, "memory").Result()
 	if err != nil {
 		log.Fatalf("Error getting memory info: %v", err)
 	}
